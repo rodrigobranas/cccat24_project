@@ -10,11 +10,11 @@ As negociações são feitas dentro de um mercado, por meio de ordens de compra 
 
 As ordens são inseridas em um livro de ofertas e são executadas quando ocorre uma correspondência entre uma ordem de compra e uma de venda.
 
-A correspondência acontece sempre entre a maior oferta de compra e a menor oferta de venda. Por exemplo: se já existe no livro uma ordem de compra de 10 BTC a R$ 83.000 e chega uma ordem de venda  de 5 BTC a R$ 82.400, ocorre uma negociação, pois o valor de compra é superior ao de venda.
+A correspondência acontece sempre entre a maior oferta de compra e a menor oferta de venda. Por exemplo: se já existe no livro uma ordem de compra de 10 BTC a R$ 83.000 e chega uma ordem de venda  de 5 BTC a R$ 82.400, ocorre uma negociação, pois o valor de compra é superior ou igual ao de venda.
 
-Esse processo gera uma negociação, que registra a quantidade executada (sempre a menor entre as duas ordens), o valor e a operação (compra ou venda) da ordem mais recente.
+Esse processo gera uma negociação, que registra a quantidade executada (sempre a menor entre as duas ordens), o valor e a operação (compra ou venda).
 
-No exemplo anterior, a menor quantidade entre a ordem de compra de 10 BTC e de venda de 5 BTC é 5, então a quantidade da negociação é 5. O valor utilizado na negociação é da ordem mais antiga, que nesse caso é de R$ 83.000 e a operação é de venda, ou seja, foram vendidos 5 BTC por R$ 83.000, a ordem de venda é eliminada do livro e a ordem de compra é atualizada para apenas 5 BTC.
+No exemplo anterior, a menor quantidade entre a ordem de compra de 10 BTC e de venda de 5 BTC é 5, então a quantidade da negociação é 5. O valor utilizado na negociação é da ordem mais antiga, que nesse caso é de R$ 83.000 e a operação é de venda (porque foi a última que entrou no livro de ofertas), ou seja, foram vendidos 5 BTC por R$ 83.000, a ordem de venda é eliminada do livro enquanto a ordem de compra continua com apenas 5 BTC.
 
 Caso não haja correspondência imediata, a ordem permanece no livro aguardando novas contrapartes.
 
@@ -122,7 +122,7 @@ Regras:
 * Salvar a ordem no mecanismo de persistência
 
 Observações:
-* O marketId é composto de um par de ativos (exemplo: BTC/USD). O lado esquerdo é o ativo principal, que está sendo comprado ou vendido, e o lado direito é o ativo utilizado para pagamento. Ou seja, se a ordem for de venda, a conta deve ter saldo no ativo principal, que está sendo negociado, nesse caso BTC. Se a ordem for de compra, a conta deve ter saldo no ativo que está sendo utilizado para o pagamento, nesse caso USD
+* O marketId é composto de um par de ativos (exemplo: BTC-USD). O lado esquerdo é o ativo principal, que está sendo comprado ou vendido, e o lado direito é o ativo utilizado para pagamento. Ou seja, se a ordem for de venda, a conta deve ter saldo no ativo principal, que está sendo negociado, nesse caso BTC. Se a ordem for de compra, a conta deve ter saldo no ativo que está sendo utilizado para o pagamento, nesse caso USD
 * A verificação do saldo deve levar em consideração as ordens que estão em aberto, evitando que alguém compra ou venda um ativo duas vezes
 * Sempre que uma nova ordem é criada, a plataforma deve tentar executá-la (***essa parte ainda não será implementada***)
 
@@ -134,7 +134,7 @@ Observações:
 
 Regras:
 
-* A ordem de compra com maior preço e a ordem de venda com menor preço são comparadas, caso o preço da ordem de compra seja maior que o preço da ordem de venda, ela é executada, caso contrário ela permanece no livro de ofertas
+* A ordem de compra com maior preço e a ordem de venda com menor preço são comparadas, caso o preço da ordem de compra seja maior ou igual que o preço da ordem de venda, ela é executada, caso contrário ela permanece no livro de ofertas
 * A execução pode ser total ou parcial, conforme ela acontece, a quantidade executada é indicada na ordem até que seja totalmente liquidada
 * O preço executado é sempre da ordem mais antiga
 * Caso a ordem seja totalmente executada ela é removida do livro de ofertas
@@ -145,7 +145,7 @@ Regras:
 
 #### GetDepth (Obter Profundidade)
 
-<p>Retorna a profundidade do mercado para um par de ativos (market), representando as ordens de compra e venda abertas, organizadas por faixa de preço. Essa informação é essencial para exibir o livro de ofertas agregado (depth chart) e analisar a liquidez disponível em cada lado.</p>
+<p>Retorna a profundidade do mercado para um par de ativos (market), por exemplo BTC-USD, representando as ordens de compra e venda abertas, organizadas por faixa de preço. Essa informação é essencial para exibir o livro de ofertas agregado (depth chart) e analisar a liquidez disponível em cada lado.</p>
 
 **Input**: marketId, precision<br/>
 **Output**: buys (quantity, price), sells (quantity, price)
